@@ -18,6 +18,10 @@ public class Application extends Controller {
 		return ok(index.render());
 	}
 
+	public static Result sampleTimeline() {
+		return ok(sample.render());
+	}
+
 	public static Result showTimeline() throws Exception {
 		Http.MultipartFormData body = request().body().asMultipartFormData();
 		Http.MultipartFormData.FilePart resourceFile = body.getFile("logFile");
