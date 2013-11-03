@@ -1,6 +1,5 @@
-@(jsonData:org.codehaus.jackson.JsonNode)
+@(jsonData:org.codehaus.jackson.JsonNode,jsonStr:String)
 @main("Apex Timeline") {
-
 
   <style type="text/css">
     .axis path,
@@ -76,5 +75,20 @@
     }
   </script>
 
-  <div id="timeline3"></div>
+<ul id="myTab" class="nav nav-tabs">
+  <li class="active"><a href="#timeline" data-toggle="tab">Timeline</a></li>
+  <li class=""><a href="#viewdata" data-toggle="tab">View JSON</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade active in" id="timeline">
+	  <div id="timeline3"></div>
+  </div>
+  <div class="tab-pane fade" id="viewdata">
+	  <div id="jsonData">
+	  	<pre>@jsonStr</pre>
+	  </div>
+  </div>
+</div>
+
 }
