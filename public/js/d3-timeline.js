@@ -133,7 +133,7 @@
             })
             .append("svg:title")
             .text(function (d, i) {
-              return d.name +
+              return  (d.name.length>80?d.name.substring(0,80)+'...':d.name) +
                      ' ('+nbrFormat(d3.round((d.endTime-d.startTime)/1000000,1)) +
                      ' ms)';
             })

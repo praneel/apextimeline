@@ -11,6 +11,7 @@ import java.util.Stack;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.anand.salesforce.log.operations.Operation;
+import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation.EntryOrExit;
 public class SFDCLogParser {
 	public static final SimpleDateFormat DATE_FORMAT= new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
@@ -40,7 +41,13 @@ public class SFDCLogParser {
 						}
 						prevOp = oprStack1.isEmpty()?null:oprStack1.pop();
 						if(prevOp!=null && prevOp.getEventId().equalsIgnoreCase(currOp.getEventId())){
+							
 							prevOp.setEndTime(currOp.getStartTime());
+							
+							//Set the row count for SOQL queries
+							if(	currOp.getEventType().equalsIgnoreCase("SOQL_EXECUTE") && currOp.getEventSubType() == EntryOrExit.END){
+								((DatabaseOperation)prevOp).setRowCount(((DatabaseOperation)currOp).getRowCount());
+							}
 							if(	prevOp.getElapsedMillis()>=timeThreshold ||
 								prevOp.getEventType().equalsIgnoreCase("SOQL") ||
 								prevOp.getEventType().equalsIgnoreCase("DML")){

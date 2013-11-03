@@ -38,7 +38,6 @@ public class Application extends Controller {
 			List<Operation> oprList = parser.getFlattenedDataForUI(top);
 			ObjectMapper mapper =new ObjectMapper();
 			JsonNode json = Json.toJson(oprList);
-			System.out.println();
 			return ok(showTimeLine.render(json,
 										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top))
 					);

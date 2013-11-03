@@ -51,7 +51,7 @@
               tickNumber: 2, 
               tickSize: 6 
             }
-          );/*.hover(function (d, i, datum) { 
+          )/*.hover(function (d, i, datum) { 
           // d is the current rendering object
           // i is the index during d3 rendering
           // datum is the id object
@@ -59,11 +59,26 @@
             var colors = chart.colors();
             div.find('.coloredDiv').css('background-color', colors(i))
             div.find('#name').text(datum.name + ' ('+nbrFormat(d3.round((datum.endTime-datum.startTime)/1000000,1))+' ms)');
-          });
+          });*/
           .click(function (d, i, datum) {
-            alert(datum.label);
-          })
-          .scroll(function (x, scale) {
+            /*alert(	'Operation:'+datum.name+'\n'+
+            		'Elapsed time:'+nbrFormat(datum.elapsedMillis)+
+            		' ms\nElapsed Since Start:'+nbrFormat(datum.elapsedSinceStart)+' ms');*/
+            var htmlLog = '<table class="table table-bordered">'+
+            		'<tbody><tr><td>Operation</td>'+
+            		'<td>'+datum.name+'</td></tr>'+
+            		'<tr><td>Execution Time</td>'+
+            		'<td>'+nbrFormat(datum.elapsedMillis)+' ms</td>'+
+            		'</tr>'+
+            		'<tr><td>Elapsed Since Start</td>'+
+            		'<td>'+nbrFormat(datum.elapsedSinceStart)+' ms</td>'+
+            		'</tr>'+
+            		'</tbody>'+
+            		'</table>';
+            $("#logdetail_body").html(htmlLog);
+            $("#logdetail").modal('show');
+          });
+          /*.scroll(function (x, scale) {
             $("#scrolled_date").text(scale.invert(x) + " to " + scale.invert(x+width));
           });*/
 
@@ -89,6 +104,21 @@
 	  	<pre>@jsonStr</pre>
 	  </div>
   </div>
+
+	<div class="modal hide fade" id="logdetail" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Log Detail:</h3>
+		</div>
+		<div class="modal-body" id="logdetail_body">
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
 </div>
 
 }
