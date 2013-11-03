@@ -40,7 +40,7 @@ public class Application extends Controller {
 			JsonNode json = Json.toJson(oprList);
 			System.out.println();
 			return ok(showTimeLine.render(json,
-										  mapper.defaultPrettyPrintingWriter().writeValueAsString(json))
+										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top))
 					);
 		}else{
 			return badRequest();
