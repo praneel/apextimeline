@@ -45,7 +45,7 @@ public class SFDCLogParser {
 							prevOp.setEndTime(currOp.getStartTime());
 							
 							//Set the row count for SOQL queries
-							if(	currOp.getEventType().equalsIgnoreCase("SOQL_EXECUTE") && currOp.getEventSubType() == EntryOrExit.END){
+							if(	currOp.getEventType().equalsIgnoreCase("SOQL") && currOp.getEventSubType() == EntryOrExit.END){
 								((DatabaseOperation)prevOp).setRowCount(((DatabaseOperation)currOp).getRowCount());
 							}
 							if(	prevOp.getElapsedMillis()>=timeThreshold ||

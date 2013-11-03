@@ -72,9 +72,14 @@
             		'</tr>'+
             		'<tr><td>Elapsed Since Start</td>'+
             		'<td>'+nbrFormat(datum.elapsedSinceStart)+' ms</td>'+
-            		'</tr>'+
-            		'</tbody>'+
-            		'</table>';
+            		'</tr>';
+            		if(datum.rowCount){
+	            		htmlLog +='<tr><td># of Records</td>'+
+	            		'<td>'+datum.rowCount+'</td>'+
+	            		'</tr>';
+          			}
+            		
+            		htmlLog +'</tbody></table>';
             $("#logdetail_body").html(htmlLog);
             $("#logdetail").modal('show');
           });
@@ -97,6 +102,7 @@
 
 <div id="myTabContent" class="tab-content">
   <div class="tab-pane fade active in" id="timeline">
+	  <div class="alert alert-info">Hover over the respect timeline bars to view time taken and click to view details.</div>
 	  <div id="timeline3"></div>
   </div>
   <div class="tab-pane fade" id="viewdata">
