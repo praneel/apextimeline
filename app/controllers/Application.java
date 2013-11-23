@@ -8,10 +8,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.anand.salesforce.log.utils.SFDCLogParser;
 import com.anand.salesforce.log.operations.Operation;
+
+import dto.LogFileRequest;
+import play.api.mvc.MultipartFormData;
+import play.data.Form;
 import play.libs.Json;
 
 import play.mvc.*;
 import scala.util.parsing.json.JSON;
+import sun.rmi.log.ReliableLog.LogFile;
 
 import views.html.*;
 
@@ -27,22 +32,24 @@ public class Application extends Controller {
 
 	@SuppressWarnings("deprecation")
 	public static Result showTimeline() throws Exception {
-		Http.MultipartFormData body = request().body().asMultipartFormData();
-		Http.MultipartFormData.FilePart resourceFile = body.getFile("logFile");
-
-		if( resourceFile != null )
-		{
+		
+		
+		Form<LogFileRequest> filledForm = Form.form(LogFileRequest.class).bindFromRequest();
+		if (filledForm.hasErrors()) {
+	        return badRequest();
+	    } else {
+	    	LogFileRequest resource = filledForm.get();
+	    	Http.MultipartFormData body = request().body().asMultipartFormData();
+	    	Http.MultipartFormData.FilePart  resourceFile = body.getFile("logFile");
 		    File file = resourceFile.getFile();
 			SFDCLogParser parser = new SFDCLogParser();
-			Operation top = parser.parseLogFile(file,100);
+			Operation top = parser.parseLogFile(file,resource.minRunTime);
 			List<Operation> oprList = parser.getFlattenedDataForUI(top);
 			ObjectMapper mapper =new ObjectMapper();
 			JsonNode json = Json.toJson(oprList);
 			return ok(showTimeLine.render(json,
 										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top))
 					);
-		}else{
-			return badRequest();
 		}
 	}
 

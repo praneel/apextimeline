@@ -1,12 +1,28 @@
 @main("Visualize your Apex Debug logs") {
-	    
-	<form method="POST" action="/showTimeline" enctype="multipart/form-data">
-	    
-	    <input type="file" name="logFile">
-	    
-	    <p>
-	        <input type="submit" value="Show Timeline">
-	    </p>
-	    
-	</form>    
+<form class="form-horizontal" method="POST" action="/showTimeline"
+	enctype="multipart/form-data">
+	<div class="control-group">
+		<label class="control-label" for="minRunTime">Minimum time to
+			display </label>
+		<div class="controls">
+			<div class="input-append">
+				<input type="text" id="minRunTime" name="minRunTime" class="input-mini" maxlength="4"
+					value="100"> 
+				<span class="add-on">ms</span>
+			</div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="logFile">File to analyze</label>
+		<div class="controls">
+			<input id="logFile" type="file" name="logFile">
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" class="btn btn-primary" value="Show Timeline">
+		</div>
+	</div>
+</form>
 }
+
