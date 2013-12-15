@@ -97,4 +97,20 @@ public class SFDCLogParser {
 		}
 		return oprList;
 	}
+
+	public List<DatabaseOperation> getDatabaseOperations(Operation operation){
+		List<DatabaseOperation> oprList = new ArrayList<DatabaseOperation>();
+		for(Operation opr : operation.getOperations()){
+			if(opr.hasOperations()){
+				oprList.addAll(getDatabaseOperations(opr));
+			}else{
+				if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
+					opr.getEventType().equalsIgnoreCase("DML")	){
+					oprList.add((DatabaseOperation)opr);
+				}
+			}
+		}
+		return oprList;
+	}
+
 }

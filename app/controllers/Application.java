@@ -7,6 +7,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.anand.salesforce.log.utils.SFDCLogParser;
+import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation;
 
 import dto.LogFileRequest;
@@ -45,10 +46,12 @@ public class Application extends Controller {
 			SFDCLogParser parser = new SFDCLogParser();
 			Operation top = parser.parseLogFile(file,resource.minRunTime);
 			List<Operation> oprList = parser.getFlattenedDataForUI(top);
+			List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
 			ObjectMapper mapper =new ObjectMapper();
 			JsonNode json = Json.toJson(oprList);
 			return ok(showTimeLine.render(json,
-										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top))
+										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
+										  dbOprList)
 					);
 		}
 	}
