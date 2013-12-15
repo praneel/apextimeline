@@ -36,7 +36,7 @@
   </style>
   <script type="text/javascript">
     window.onload = function() {
-
+      $.noConflict();
       var rateTimelineData = @Html(jsonData.toString());
       var width = 800;
       var nbrFormat = d3.format("0,000");
@@ -80,8 +80,8 @@
           			}
             		
             		htmlLog +'</tbody></table>';
-            $("#logdetail_body").html(htmlLog);
-            $("#logdetail").modal('show');
+            jQuery("#logdetail_body").html(htmlLog);
+            jQuery("#logdetail").modal('show');
           });
           /*.scroll(function (x, scale) {
             $("#scrolled_date").text(scale.invert(x) + " to " + scale.invert(x+width));
