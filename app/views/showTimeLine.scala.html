@@ -36,7 +36,7 @@
   </style>
   <script type="text/javascript">
     window.onload = function() {
-      $.noConflict();
+      jQuery.noConflict();
       var rateTimelineData = @Html(jsonData.toString());
       var width = 800;
       var nbrFormat = d3.format("0,000");
