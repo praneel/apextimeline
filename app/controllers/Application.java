@@ -6,6 +6,8 @@ import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import canvas.SignedRequest;
+
 import com.anand.salesforce.log.utils.SFDCLogParser;
 import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation;
@@ -24,6 +26,10 @@ import views.html.*;
 public class Application extends Controller {
 
 	public static Result index() {
+		String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
+		String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
+		String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
+		System.out.println("signedRequestJson ===== "+signedRequestJson);
 		return ok(index.render());
 	}
 
