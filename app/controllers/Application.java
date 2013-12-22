@@ -32,7 +32,7 @@ public class Application extends Controller {
 			String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
 			System.out.println("signedRequestJson ===== "+signedRequestJson);
 			session().put("signed_request", signedRequestJson);
-			return ok(index.render(signedRequest[0]));
+			return ok(index.render(signedRequestJson));
 		}else{
 			return ok(index.render(session().get("signed_request")));
 			
