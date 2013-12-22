@@ -27,12 +27,12 @@
 </form>
 
 @if(signedRequest!=null){
-	<script type="text/javascript">
-		Sfdc.canvas(function() {
-		    sr = JSON.parse('@signedRequest');
-		    Sfdc.canvas.client.autogrow(sr.client);
-		});
-	</script>
+<script type="text/javascript">
+	Sfdc.canvas(function() {
+	    sr = JSON.parse('@Json(signedRequest)');
+	    Sfdc.canvas.client.autogrow(sr.client);
+	});
+</script>
 
 }
 }
