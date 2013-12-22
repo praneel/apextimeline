@@ -28,11 +28,10 @@ public class Application extends Controller {
 	public static Result index() {
 		if(request().method().equalsIgnoreCase("POST")){
 			String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
-			session().put("signed_request", signedRequest[0]);
 			String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
 			String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
-			System.out.println("signedRequestJson ===== "+signedRequestJson);
-			return ok(index.render(signedRequest[0]));
+			session().put("signed_request", signedRequestJson);
+			return ok(index.render(signedRequestJson));
 		}else{
 			return ok(index.render(session().get("signed_request")));
 			
