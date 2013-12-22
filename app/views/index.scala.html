@@ -29,7 +29,7 @@
 @if(signedRequest!=null){
 <script type="text/javascript">
 	Sfdc.canvas(function() {
-	    sr = JSON.parse('@Json(signedRequest)');
+	    sr = JSON.parse('@Html(signedRequest)');
 	    Sfdc.canvas.client.autogrow(sr.client);
 	});
 </script>
