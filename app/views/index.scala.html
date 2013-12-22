@@ -1,3 +1,4 @@
+@(signedRequest:String)
 @main("Visualize your Apex Debug logs") {
 <form class="form-horizontal" method="POST" action="/showTimeline"
 	enctype="multipart/form-data">
@@ -24,5 +25,15 @@
 		</div>
 	</div>
 </form>
+
+@if(signedRequest!=null){
+	<script type="text/javascript">
+		Sfdc.canvas(function() {
+		    sr = JSON.parse('@signedRequest');
+		    Sfdc.canvas.client.autogrow(sr.client);
+		});
+	</script>
+
+}
 }
 

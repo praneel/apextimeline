@@ -26,11 +26,17 @@ import views.html.*;
 public class Application extends Controller {
 
 	public static Result index() {
-		String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
-		String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
-		String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
-		System.out.println("signedRequestJson ===== "+signedRequestJson);
-		return ok(index.render());
+		if(request().method().equalsIgnoreCase("POST")){
+			String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
+			session().put("signed_request", signedRequest[0]);
+			String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
+			String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
+			System.out.println("signedRequestJson ===== "+signedRequestJson);
+			return ok(index.render(signedRequest[0]));
+		}else{
+			return ok(index.render(session().get("signed_request")));
+			
+		}
 	}
 
 	public static Result sampleTimeline() {
@@ -48,17 +54,21 @@ public class Application extends Controller {
 	    	LogFileRequest resource = filledForm.get();
 	    	Http.MultipartFormData body = request().body().asMultipartFormData();
 	    	Http.MultipartFormData.FilePart  resourceFile = body.getFile("logFile");
-		    File file = resourceFile.getFile();
-			SFDCLogParser parser = new SFDCLogParser();
-			Operation top = parser.parseLogFile(file,resource.minRunTime);
-			List<Operation> oprList = parser.getFlattenedDataForUI(top);
-			List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
-			ObjectMapper mapper =new ObjectMapper();
-			JsonNode json = Json.toJson(oprList);
-			return ok(showTimeLine.render(json,
-										  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
-										  dbOprList)
-					);
+	    	if(resourceFile!=null){
+			    File file = resourceFile.getFile();
+				SFDCLogParser parser = new SFDCLogParser();
+				Operation top = parser.parseLogFile(file,resource.minRunTime);
+				List<Operation> oprList = parser.getFlattenedDataForUI(top);
+				List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
+				ObjectMapper mapper =new ObjectMapper();
+				JsonNode json = Json.toJson(oprList);
+				return ok(showTimeLine.render(json,
+											  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
+											  dbOprList)
+						);
+	    	}else{
+				return ok(index.render(session().get("signed_request")));
+	    	}
 		}
 	}
 
