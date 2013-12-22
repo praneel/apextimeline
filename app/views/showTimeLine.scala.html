@@ -1,4 +1,4 @@
-@(jsonData:org.codehaus.jackson.JsonNode,jsonStr:String,dbOps:List[com.anand.salesforce.log.operations.DatabaseOperation])
+@(jsonData:org.codehaus.jackson.JsonNode,jsonStr:String,dbOps:List[com.anand.salesforce.log.operations.DatabaseOperation],signedRequest:String)
 @main("Apex Timeline") {
 
   <style type="text/css">
@@ -147,5 +147,13 @@
 		</div>
 	</div>
 </div>
+@if(signedRequest!=null){
+<script type="text/javascript">
+	Sfdc.canvas(function() {
+	    sr = JSON.parse('@Html(signedRequest)');
+	    Sfdc.canvas.client.autogrow(sr.client);
+	});
+</script>
 
+}
 }

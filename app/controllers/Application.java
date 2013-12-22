@@ -63,7 +63,8 @@ public class Application extends Controller {
 				JsonNode json = Json.toJson(oprList);
 				return ok(showTimeLine.render(json,
 											  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
-											  dbOprList)
+											  dbOprList,
+											  session().get("signed_request"))
 						);
 	    	}else{
 				return ok(index.render(session().get("signed_request")));
