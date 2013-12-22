@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+POST     /                           controllers.Application.index()
 POST     /showTimeline                           controllers.Application.showTimeline()
 GET     /sample                           controllers.Application.sampleTimeline()
 
