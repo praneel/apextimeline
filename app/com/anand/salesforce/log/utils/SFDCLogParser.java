@@ -88,11 +88,13 @@ public class SFDCLogParser {
 	public List<Operation> getFlattenedDataForUI(Operation operation){
 		List<Operation> oprList = new ArrayList<Operation>();
 		oprList.add(operation);
-		for(Operation opr : operation.getOperations()){
-			if(opr.hasOperations()){
-				oprList.addAll(getFlattenedDataForUI(opr));
-			}else{
-				oprList.add(opr);
+		if(operation.hasOperations()){
+			for(Operation opr : operation.getOperations()){
+				if(opr.hasOperations()){
+					oprList.addAll(getFlattenedDataForUI(opr));
+				}else{
+					oprList.add(opr);
+				}
 			}
 		}
 		return oprList;
@@ -100,13 +102,15 @@ public class SFDCLogParser {
 
 	public List<DatabaseOperation> getDatabaseOperations(Operation operation){
 		List<DatabaseOperation> oprList = new ArrayList<DatabaseOperation>();
-		for(Operation opr : operation.getOperations()){
-			if(opr.hasOperations()){
-				oprList.addAll(getDatabaseOperations(opr));
-			}else{
-				if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
-					opr.getEventType().equalsIgnoreCase("DML")	){
-					oprList.add((DatabaseOperation)opr);
+		if(operation.hasOperations()){
+			for(Operation opr : operation.getOperations()){
+				if(opr.hasOperations()){
+					oprList.addAll(getDatabaseOperations(opr));
+				}else{
+					if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
+						opr.getEventType().equalsIgnoreCase("DML")	){
+						oprList.add((DatabaseOperation)opr);
+					}
 				}
 			}
 		}
