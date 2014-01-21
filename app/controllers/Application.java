@@ -1,7 +1,9 @@
 package controllers;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -31,9 +33,15 @@ public class Application extends Controller {
 			String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
 			String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest[0], yourConsumerSecret);
 			session().put("signed_request", signedRequestJson);
-			return ok(index.render(signedRequestJson));
+			return ok(	index.render(	signedRequestJson,
+					 					new Boolean(false)
+							)
+					);
 		}else{
-			return ok(index.render(session().get("signed_request")));
+			return ok(index.render(	session().get("signed_request"),
+									new Boolean(false)
+								)
+					);
 			
 		}
 	}
@@ -57,17 +65,38 @@ public class Application extends Controller {
 			    File file = resourceFile.getFile();
 				SFDCLogParser parser = new SFDCLogParser();
 				Operation top = parser.parseLogFile(file,resource.minRunTime);
-				List<Operation> oprList = parser.getFlattenedDataForUI(top);
-				List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
-				ObjectMapper mapper =new ObjectMapper();
-				JsonNode json = Json.toJson(oprList);
-				return ok(showTimeLine.render(json,
-											  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
-											  dbOprList,
-											  session().get("signed_request"))
-						);
+				
+				if(top!=null){
+					List<Operation> oprList = parser.getFlattenedDataForUI(top);
+					List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
+					ObjectMapper mapper =new ObjectMapper();
+					JsonNode json = Json.toJson(oprList);
+					if("application/json".equalsIgnoreCase(request().getHeader("Accept")) ||
+						"text/json".equalsIgnoreCase(request().getHeader("Accept"))){
+						return ok(Json.toJson(top));
+					}else{
+						return ok(showTimeLine.render(json,
+												  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
+												  dbOprList,
+												  session().get("signed_request"))
+							);
+					}
+				}else{
+					if("application/json".equalsIgnoreCase(request().getHeader("Accept")) ||
+							"text/json".equalsIgnoreCase(request().getHeader("Accept"))){
+						Map<String,String> resp = new HashMap<String,String>();
+						resp.put("msg","Could not parse log file. Check if log file is incomplete.");
+						return internalServerError(Json.toJson(resp));
+						
+					}else{
+						return ok(index.render(null,new Boolean(true)));
+					}
+				}	
 	    	}else{
-				return ok(index.render(session().get("signed_request")));
+				return ok(index.render(	session().get("signed_request"),
+										new Boolean(false)
+								)
+						);
 	    	}
 		}
 	}

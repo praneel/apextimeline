@@ -1,5 +1,10 @@
-@(signedRequest:String)
+@(signedRequest:String,isError:java.lang.Boolean)
 @main("Visualize your Apex Debug logs") {
+@if(isError) {
+	<div class="alert alert-danger">Could not parse the debug log file. It is possible that your may have an incomplete log. 
+	If you have a complete log, file an issue on <a href="https://github.com/anandbn/apextimeline/issues" target="_blank">Github</a></div>
+}
+
 <form class="form-horizontal" method="POST" action="/showTimeline"
 	enctype="multipart/form-data">
 	<div class="control-group">

@@ -75,6 +75,8 @@ public class SFDCLogParser {
 			}
 			
 			return oprStack1.pop();
+		}catch(Exception ex){
+			return null;
 		}finally{
 			try{
 				reader.close();
