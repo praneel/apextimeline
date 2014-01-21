@@ -4,6 +4,7 @@ public class QueryOperation extends DatabaseOperation {
 
 	public QueryOperation(long execStartTime, String[] logLineTokens) {
 		super(execStartTime,logLineTokens);
+		this.operationType="Query";
 		if(this.eventSubType==EntryOrExit.BEGIN){
 			this.name = logLineTokens[4];
 		}

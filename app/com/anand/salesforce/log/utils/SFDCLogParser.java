@@ -13,16 +13,19 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.anand.salesforce.log.operations.Operation;
 import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation.EntryOrExit;
+import com.anand.salesforce.log.operations.TriggerExecutionOperation;
 public class SFDCLogParser {
 	public static final SimpleDateFormat DATE_FORMAT= new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
 	public static void main(String args[]) throws Exception{
 		SFDCLogParser parser = new SFDCLogParser();
-		parser.parseLogFile(args[0],Integer.parseInt(args[1]));
+		ObjectMapper mapper = new ObjectMapper();
+		
+		mapper.writeValue(System.out, parser.parseLogFile(args[0],Integer.parseInt(args[1])));
 	}
 	
-	public void parseLogFile(String fileName,Integer timeThreshold) throws Exception{
+	public Operation parseLogFile(String fileName,Integer timeThreshold) throws Exception{
 		File logFile = new File(fileName);
-		parseLogFile(logFile,timeThreshold);
+		return parseLogFile(logFile,timeThreshold);
 	}
 	public Operation parseLogFile(File logFile,Integer timeThreshold) throws Exception{
 		Stack<Operation> oprStack1 = new Stack<Operation>();
@@ -50,7 +53,8 @@ public class SFDCLogParser {
 							}
 							if(	prevOp.getElapsedMillis()>=timeThreshold ||
 								prevOp.getEventType().equalsIgnoreCase("SOQL") ||
-								prevOp.getEventType().equalsIgnoreCase("DML")){
+								prevOp.getEventType().equalsIgnoreCase("DML") ||
+								prevOp instanceof TriggerExecutionOperation){
 								//Pop the parent & add it to paren't long running operations
 								parentOpr = oprStack1.isEmpty()?null:oprStack1.pop();
 								if(parentOpr !=null){
@@ -76,6 +80,7 @@ public class SFDCLogParser {
 			
 			return oprStack1.pop();
 		}catch(Exception ex){
+			ex.printStackTrace();
 			return null;
 		}finally{
 			try{

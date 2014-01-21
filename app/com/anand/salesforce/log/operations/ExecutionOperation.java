@@ -13,7 +13,7 @@ public class ExecutionOperation extends Operation {
         String[] eventTokens = logLineTokens[1].split("_");
         this.eventType = eventTokens[0];
         this.eventSubType =Enum.valueOf(EntryOrExit.class, eventTokens[eventTokens.length-1]);
-        this.execStartTime=startTime;
+        this.execStartTime=execStartTime;
         
 	}
 }

@@ -112,6 +112,7 @@
 		<thead>
 			<tr>
 				<th>Time (ms)</th>
+				<th>Operation</th>
 				<th># of Records</th>
 				<th>Operation</th>
 			</tr>
@@ -119,6 +120,7 @@
   		@for(opr <- dbOps) {
   			<tr>
   				<td align="right">@opr.getElapsedMillis()</td>
+  				<td>@opr.getOperationType()</td>
   				<td>@opr.getRowCount()</td>
   				<td>@opr.getName()</td>
   				

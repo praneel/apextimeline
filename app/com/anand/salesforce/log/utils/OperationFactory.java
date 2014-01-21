@@ -5,6 +5,7 @@ import com.anand.salesforce.log.operations.ExecutionOperation;
 import com.anand.salesforce.log.operations.MethodOperation;
 import com.anand.salesforce.log.operations.Operation;
 import com.anand.salesforce.log.operations.QueryOperation;
+import com.anand.salesforce.log.operations.TriggerExecutionOperation;
 
 public class OperationFactory {
 
@@ -18,6 +19,12 @@ public class OperationFactory {
 	    	return new DMLOperation(execStartTime,tokens);
 	    }else if(tokens[1].startsWith("EXECUTION_")){
 	    	return new ExecutionOperation(execStartTime,tokens);
+	    }else if(tokens[1].startsWith("CODE_UNIT_")){
+	    	//Check if this is a trigger
+	    	if(tokens[tokens.length-1].indexOf("trigger")>-1){
+	    		//this is a trigger code execution
+	    		return new TriggerExecutionOperation(execStartTime,tokens);
+	    	}
 	    }
 	    return null;
 		
