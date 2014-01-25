@@ -52,6 +52,7 @@ public class SFDCLogParser {
 								((DatabaseOperation)prevOp).setRowCount(((DatabaseOperation)currOp).getRowCount());
 							}
 							if(	prevOp.getElapsedMillis()>=timeThreshold ||
+								prevOp.hasOperations() ||
 								prevOp.getEventType().equalsIgnoreCase("SOQL") ||
 								prevOp.getEventType().equalsIgnoreCase("DML") ||
 								prevOp instanceof TriggerExecutionOperation){
