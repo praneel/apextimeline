@@ -1,7 +1,7 @@
 package com.anand.salesforce.log.operations;
 
 
-public class TriggerExecutionOperation extends ExecutionOperation {
+public class TriggerExecutionOperation extends DatabaseOperation {
 	protected TriggerEvent triggerEvent;
 	protected String objectName;
 	
@@ -13,6 +13,7 @@ public class TriggerExecutionOperation extends ExecutionOperation {
 	
 	public TriggerExecutionOperation(long execStartTime, String[] logLineTokens) {
         super(execStartTime,logLineTokens);
+        this.operationType="TRIGGER";
 		this.eventId = "TRIGGER";
         String[] timeTokens = logLineTokens[0].split(" ");
         this.startTime= Long.valueOf(timeTokens[1].substring(1,timeTokens[1].length()-1));

@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.anand.salesforce.log.operations.DMLOperation;
 import com.anand.salesforce.log.operations.Operation;
 import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation.EntryOrExit;
@@ -19,8 +20,11 @@ public class SFDCLogParser {
 	public static void main(String args[]) throws Exception{
 		SFDCLogParser parser = new SFDCLogParser();
 		ObjectMapper mapper = new ObjectMapper();
+		Operation opr = parser.parseLogFile(args[0],Integer.parseInt(args[1]));
 		
-		mapper.writeValue(System.out, parser.parseLogFile(args[0],Integer.parseInt(args[1])));
+		//mapper.writeValue(System.out, opr);
+		mapper.writeValue(System.out, parser.getDatabaseOperations(opr));
+		
 	}
 	
 	public Operation parseLogFile(String fileName,Integer timeThreshold) throws Exception{
@@ -114,12 +118,12 @@ public class SFDCLogParser {
 			for(Operation opr : operation.getOperations()){
 				if(opr.hasOperations()){
 					oprList.addAll(getDatabaseOperations(opr));
-				}else{
-					if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
-						opr.getEventType().equalsIgnoreCase("DML")	){
-						oprList.add((DatabaseOperation)opr);
-					}
 				}
+				if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
+					opr.getEventType().equalsIgnoreCase("DML") ){
+					oprList.add((DatabaseOperation)opr);
+				}
+
 			}
 		}
 		return oprList;
