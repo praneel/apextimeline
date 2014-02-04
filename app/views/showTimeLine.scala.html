@@ -1,4 +1,7 @@
-@(jsonData:org.codehaus.jackson.JsonNode,jsonStr:String,dbOps:List[com.anand.salesforce.log.operations.DatabaseOperation],signedRequest:String)
+@(	jsonData:org.codehaus.jackson.JsonNode,
+	jsonStr:String,
+	logStats:dto.LogStatistics,
+	signedRequest:String)
 @main("Apex Timeline") {
 
   <style type="text/css">
@@ -107,7 +110,32 @@
 	  <div id="timeline3"></div>
   </div>
   <div class="tab-pane fade" id="dbOps">
-  
+  	<table class="table table-striped">
+ 		<thead>
+			<tr>
+				<th></th>
+				<th>Count</th>
+				<th>Total time (ms)</th>
+			</tr>
+		</thead>
+		<tbody>
+  			<tr>
+  				<td>SOQL Queries</td>
+  				<td>@logStats.getQueryCount()</td>
+  				<td>@logStats.getTotalSOQLTime()</td>
+  			</tr>
+  			<tr>
+  				<td>DML operations</td>
+  				<td>@logStats.getDmlObjectCount()</td>
+  				<td>@logStats.getTotalDMLTime()</td>
+  			</tr>
+  			<tr>
+  				<td>Apex triggers</td>
+  				<td>@logStats.getTriggerCount()</td>
+  				<td>@logStats.getTotalTriggerTime()</td>
+  			</tr>
+  		</tbody>
+  	</table>
   	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -117,7 +145,7 @@
 				<th>Operation</th>
 			</tr>
 		</thead>
-  		@for(opr <- dbOps) {
+  		@for(opr <- logStats.getDbOperations()) {
   			<tr>
   				<td align="right">@opr.getElapsedMillis()</td>
   				<td>@opr.getOperationType()</td>

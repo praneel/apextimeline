@@ -15,6 +15,8 @@ import com.anand.salesforce.log.operations.Operation;
 import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation.EntryOrExit;
 import com.anand.salesforce.log.operations.TriggerExecutionOperation;
+
+import dto.LogStatistics;
 public class SFDCLogParser {
 	public static final SimpleDateFormat DATE_FORMAT= new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
 	public static void main(String args[]) throws Exception{
@@ -23,7 +25,9 @@ public class SFDCLogParser {
 		Operation opr = parser.parseLogFile(args[0],Integer.parseInt(args[1]));
 		
 		//mapper.writeValue(System.out, opr);
-		mapper.writeValue(System.out, parser.getDatabaseOperations(opr));
+		LogStatistics logStats = new LogStatistics();
+		parser.getDatabaseOperations(opr,logStats);
+		mapper.writeValue(System.out, logStats);
 		
 	}
 	
@@ -112,21 +116,33 @@ public class SFDCLogParser {
 		return oprList;
 	}
 
-	public List<DatabaseOperation> getDatabaseOperations(Operation operation){
-		List<DatabaseOperation> oprList = new ArrayList<DatabaseOperation>();
+	public void getDatabaseOperations(Operation operation,LogStatistics logStats){
 		if(operation.hasOperations()){
 			for(Operation opr : operation.getOperations()){
 				if(opr.hasOperations()){
-					oprList.addAll(getDatabaseOperations(opr));
+					getDatabaseOperations(opr,logStats);
+				}
+				if(	opr instanceof TriggerExecutionOperation){
+					logStats.addToTriggerTime(opr.getElapsedMillis());
+					logStats.incrementTriggerCount();
+				
 				}
 				if(	opr.getEventType().equalsIgnoreCase("SOQL") || 
 					opr.getEventType().equalsIgnoreCase("DML") ){
-					oprList.add((DatabaseOperation)opr);
+					logStats.addDBOperation((DatabaseOperation)opr);
+					if(opr.getEventType().equalsIgnoreCase("SOQL")){
+						logStats.addToQueryTime(opr.getElapsedMillis());
+						logStats.incrementQueryCount();
+					}
+					if(opr.getEventType().equalsIgnoreCase("DML")){
+						logStats.addToDMLTime(opr.getElapsedMillis());
+						logStats.incrementDmlObjectCount();
+					}
+					
 				}
 
 			}
 		}
-		return oprList;
 	}
 
 }

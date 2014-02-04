@@ -13,8 +13,10 @@ import canvas.SignedRequest;
 import com.anand.salesforce.log.utils.SFDCLogParser;
 import com.anand.salesforce.log.operations.DatabaseOperation;
 import com.anand.salesforce.log.operations.Operation;
+import com.anand.salesforce.log.operations.TriggerExecutionOperation;
 
 import dto.LogFileRequest;
+import dto.LogStatistics;
 import play.api.mvc.MultipartFormData;
 import play.data.Form;
 import play.libs.Json;
@@ -68,7 +70,8 @@ public class Application extends Controller {
 				
 				if(top!=null){
 					List<Operation> oprList = parser.getFlattenedDataForUI(top);
-					List<DatabaseOperation> dbOprList = parser.getDatabaseOperations(top);
+					LogStatistics logStats = new LogStatistics();
+					parser.getDatabaseOperations(top,logStats);
 					ObjectMapper mapper =new ObjectMapper();
 					JsonNode json = Json.toJson(oprList);
 					if("application/json".equalsIgnoreCase(request().getHeader("Accept")) ||
@@ -77,7 +80,7 @@ public class Application extends Controller {
 					}else{
 						return ok(showTimeLine.render(json,
 												  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
-												  dbOprList,
+												  logStats,
 												  session().get("signed_request"))
 							);
 					}
