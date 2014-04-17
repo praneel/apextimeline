@@ -52,6 +52,13 @@ public class Application extends Controller {
 		return ok(sample.render());
 	}
 
+	public static Result showTimelinev2() {
+		return ok(showTimeLinev2.render(null,null,null,null));
+	}
+	public static Result oauthredirect() {
+		return ok(oauthredirect.render());
+	}
+
 	@SuppressWarnings("deprecation")
 	public static Result showTimeline() throws Exception {
 		

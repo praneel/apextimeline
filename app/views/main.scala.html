@@ -55,7 +55,10 @@
               <li class="active"><a href="/">Home</a></li>
               <li><a href="/sample">Sample Timeline</a></li>
               <li><a href="#contact">Contact</a></li>
-             </ul>
+            </ul>
+			<ul class="nav pull-right">
+				<li><a href="#" ng-hide="authorized" ng-click="initiateOAuth()">Login to Salesforce</a></li>
+			</ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -72,7 +75,26 @@
         <p>&copy;Anand Narasimhan 2013</p>
       </footer>
 
-    </div> 
+    </div>
+<script type="text/javascript">
+	var CONFIG={
+       		clientId :'3MVG9y6x0357HlefnLzrysj7TpaNMouLISiwZr8DZrumu15AZ9JAkHzPHIAPkk25yS4AbCtCROXGBs603P2Li',
+			loginUrl : 'https://login.salesforce.com',
+			callbackPath : 'http://localhost:8080/oauthredirect',
+			popup : true
+	};
+</script> 
 
+<script type="text/javascript">
+
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	ga('create', 'UA-50120488-1', 'apextimeline.herokuapp.com');
+	ga('send', 'pageview');
+	
+</script>
   </body>
 </html>
