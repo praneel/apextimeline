@@ -8,7 +8,7 @@ POST     /                           controllers.Application.index()
 POST     /showTimeline                           controllers.Application.showTimeline()
 GET     /oauthredirect                           controllers.Application.oauthredirect()
 GET     /sample                           controllers.Application.sampleTimeline()
-GET     /showTimeline                           controllers.Application.showTimelinev2()
+GET     /showTimeline                           controllers.Application.showTimeline()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
