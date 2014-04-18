@@ -6,7 +6,7 @@
 GET     /                           controllers.Application.index()
 POST     /                           controllers.Application.index()
 POST     /showTimeline                           controllers.Application.showTimeline()
-GET     /oauthredirect                           controllers.Application.oauthredirect()
+# GET     /oauthredirect                           controllers.Application.oauthredirect()
 GET     /sample                           controllers.Application.sampleTimeline()
 GET     /showTimeline                           controllers.Application.showTimeline()
 
