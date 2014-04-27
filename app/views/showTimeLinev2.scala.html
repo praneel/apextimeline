@@ -1,0 +1,73 @@
+@(	jsonData:org.codehaus.jackson.JsonNode,
+	jsonStr:String,
+	logStats:dto.LogStatistics,
+	signedRequest:String)
+@main("Apex Timeline") {
+	<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
+	       'version':'1','packages':['timeline']}]}"></script>
+	<script type="text/javascript">
+	google.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+	  var container = document.getElementById('example1');
+	
+	  var chart = new google.visualization.Timeline(container);
+	
+	  var dataTable = new google.visualization.DataTable();
+
+	  dataTable.addColumn({ type: 'string', id: 'Step' });
+	  dataTable.addColumn({ type: 'string', id: 'Operation' });
+	  dataTable.addColumn({ type: 'string', id: 'eventId' });
+	  dataTable.addColumn({ type: 'date', id: 'Start' });
+	  dataTable.addColumn({ type: 'date', id: 'End' });
+	  dataTable.addColumn({ type: 'string', id: 'eventType' });
+	  dataTable.addColumn({ type: 'number', id: 'execStartTime' });
+	  dataTable.addColumn({ type: 'number', id: 'elapsedMillis' });
+	  dataTable.addColumn({ type: 'number', id: 'elapsedSinceStart' });
+	
+	  dataTable.addRows([
+			{
+			    "name": "MAIN",
+			    "eventId": "ENTRY_POINT",
+			    "timeStamp": "11:39:47.462",
+			    "startTime": 5462058000,
+			    "endTime": 6003632000,
+			    "eventType": "EXECUTION",
+			    "execStartTime": -1,
+			    "elapsedMillis": 541,
+			    "elapsedSinceStart": 6003
+			  },
+			  {
+			    "name": "eSalesController.validatePostalCode(PostalCodeValidateServiceInput)",
+			    "eventId": "[5]",
+			    "timeStamp": "11:39:47.485",
+			    "startTime": 5485338000,
+			    "endTime": 6003476000,
+			    "eventType": "METHOD",
+			    "execStartTime": 5462058000,
+			    "elapsedMillis": 518,
+			    "elapsedSinceStart": 541
+			  },
+			  {
+			    "name": "ValidateZipCodeServiceCallout.getZipCodeValidation(PostalCodeValidateServiceInput)",
+			    "eventId": "[207]",
+			    "timeStamp": "11:39:47.490",
+			    "startTime": 5490659000,
+			    "endTime": 6002297000,
+			    "eventType": "METHOD",
+			    "execStartTime": 5462058000,
+			    "elapsedMillis": 511,
+			    "elapsedSinceStart": 540
+			  }
+	  ]);
+	  var options = {
+	  	enableInteractivity:true,
+	  	timeline: { showRowLabels: true },
+		avoidOverlappingGridLines: false
+	  };
+	  chart.draw(dataTable,options);
+	}
+	</script>
+	<div id="example1" style="width: 900px; height: 180px;"></div>
+
+}
