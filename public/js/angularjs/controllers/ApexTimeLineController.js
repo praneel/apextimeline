@@ -1,14 +1,45 @@
- 
+var apexTimeLineControllers = angular.module('apexTimelineControllers', []);
 apexTimeLineControllers.controller('ApexTimeLineController', 
-							  ['$scope','ForceAuthService',
-  function ($scope,ForceAuthService) {
-	$scope.authorized=false;
-    $scope.init = function() {
-    	$scope.config= CONFIG ;
-    };
-    
+							  ['$scope','$window','$http','ForceAuthService',
+  function ($scope,$window,$http,ForceAuthService) {
+	$scope.init = function(){
+		$scope.$apply($scope.initializeData);
+	}
 
+    $scope.initializeData = function () {
+		$scope.authorized=true;
+        $scope.sessionToken = ForceAuthService.getSessionToken();
+        $scope.minTimeToRun=100;
+		$http({ method: 'POST', 
+            url:'/logs',
+            data:{
+                'sessionId':$scope.sessionToken.access_token,
+                'instanceUrl':$scope.sessionToken.instance_url
+            },
+            headers:{
+            	'Accept':'application/json'
+            }
+        }).success(function(data, status) {
+            $scope.logRecords=data.records;
+        }).error(function(data, status) {
+        });
+		
+		$http({ method: 'POST', 
+            url:'/userinfo',
+            data:{
+                'sessionId':$scope.sessionToken.access_token,
+                'idUrl':$scope.sessionToken.id
+            },
+            headers:{
+            	'Accept':'application/json'
+            }
+        }).success(function(data, status) {
+            $scope.userInfo=data;
+        }).error(function(data, status) {
+        });
 
+    }
+		
     $scope.initiateOAuth = function (){
     	ForceAuthService.ready($scope.config);
     }
@@ -22,5 +53,15 @@ apexTimeLineControllers.controller('ApexTimeLineController',
     //Register the Oauth callback as a function on the main window
     $window.oauthCallback=$scope.oauthCallback;
 
+	$scope.config= CONFIG ;
+	try{
+		$scope.sessionToken = ForceAuthService.getSessionToken();
+		$scope.authorized=true;
+		$scope.initializeData();
+	}catch(err){
+		$scope.authorized=false;
+	}
+
+    
   }
 ]);

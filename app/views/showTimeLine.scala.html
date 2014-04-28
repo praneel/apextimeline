@@ -145,14 +145,16 @@
 				<th>Operation</th>
 			</tr>
 		</thead>
-  		@for(opr <- logStats.getDbOperations()) {
-  			<tr>
-  				<td align="right">@opr.getElapsedMillis()</td>
-  				<td>@opr.getOperationType()</td>
-  				<td>@opr.getRowCount()</td>
-  				<td>@opr.getName()</td>
-  				
-  			</tr>
+  		@if(logStats.getDbOperations()!=null){
+	  		@for(opr <- logStats.getDbOperations()) {
+	  			<tr>
+	  				<td align="right">@opr.getElapsedMillis()</td>
+	  				<td>@opr.getOperationType()</td>
+	  				<td>@opr.getRowCount()</td>
+	  				<td>@opr.getName()</td>
+	  				
+	  			</tr>
+			}
 		} 
   	</table>
   </div>

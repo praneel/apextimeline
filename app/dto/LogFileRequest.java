@@ -6,5 +6,6 @@ public class LogFileRequest {
 	@Required
 	public Integer minRunTime;
 
+	public String logId;
 
 }

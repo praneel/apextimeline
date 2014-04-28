@@ -17,18 +17,22 @@ import com.anand.salesforce.log.operations.TriggerExecutionOperation;
 
 import dto.LogFileRequest;
 import dto.LogStatistics;
-import play.api.mvc.MultipartFormData;
 import play.data.Form;
 import play.libs.Json;
-
+import play.libs.F.Function;
+import play.libs.WS;
 import play.mvc.*;
-import scala.util.parsing.json.JSON;
-import sun.rmi.log.ReliableLog.LogFile;
+
 
 import views.html.*;
 
 public class Application extends Controller {
 
+	private static final String GET_LOGS_URL_BASE= "/services/data/v29.0/";
+	private static final String GET_RAW_LOG_URL = "tooling/sobjects/ApexLog/";
+	private static final String GET_LOGS_QUERY = "select Id,LogUser.Name,LogUserId,LogLength,Operation,Application,Status," +
+												 "DurationMilliseconds,StartTime " +
+												 "from ApexLog order by SystemModstamp limit 100";
 	public static Result index() {
 		if(request().method().equalsIgnoreCase("POST")){
 			String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
@@ -47,18 +51,86 @@ public class Application extends Controller {
 			
 		}
 	}
+	
 
 	public static Result sampleTimeline() {
 		return ok(sample.render());
 	}
 
-	/*public static Result showTimelinev2() {
-		return ok(showTimeLinev2.render(null,null,null,null));
+	public static Result logs() {
+		JsonNode json = request().body().asJson();
+		String sessionId = json.findPath("sessionId").getTextValue();
+		String instanceUrl = json.findPath("instanceUrl").getTextValue();
+		return async(play.libs.WS.url(instanceUrl+GET_LOGS_URL_BASE+"query/")
+									  .setQueryParameter("q",GET_LOGS_QUERY)
+									  .setHeader("Authorization", "Bearer "+sessionId)
+									  .setHeader("Accept","application/json")
+									  .get()
+									  .map( new Function<WS.Response, Result>() {
+										          public Result apply(WS.Response response) {
+										        	  return ok(response.asJson());
+										          }
+										    }
+									   )
+		);
+	}
+
+	
+	public static Result userInfo() {
+		JsonNode json = request().body().asJson();
+		String sessionId = json.findPath("sessionId").getTextValue();
+		String idUrl = json.findPath("idUrl").getTextValue();
+		return async(play.libs.WS.url(idUrl)
+									  .setQueryParameter("q",GET_LOGS_QUERY)
+									  .setHeader("Authorization", "Bearer "+sessionId)
+									  .setHeader("Accept","application/json")
+									  .get()
+									  .map( new Function<WS.Response, Result>() {
+										          public Result apply(WS.Response response) {
+										        	  return ok(response.asJson());
+										          }
+										    }
+									   )
+		);
+	}
+
+	public static Result showTimelinev2(String logId) {
+		final Integer minRunTime=100;
+		String tokenStr = request().cookie("token").value();
+		JsonNode sessionToken = Json.parse(tokenStr);
+		String sessionId = sessionToken.get("access_token").getTextValue();
+		String instanceUrl = sessionToken.get("instance_url").getTextValue();
+		return async(play.libs.WS.url(instanceUrl+GET_LOGS_URL_BASE+GET_RAW_LOG_URL+logId+"/Body/")
+				  .setHeader("Authorization", "Bearer "+sessionId)
+				  .get()
+				  .map( new Function<WS.Response, Result>() {
+					          public Result apply(WS.Response response) throws Exception {
+								SFDCLogParser parser = new SFDCLogParser();
+								Operation top = parser.parseLogFile(response.getBody(),minRunTime);
+								if(top!=null){
+									List<Operation> oprList = parser.getFlattenedDataForUI(top);
+									LogStatistics logStats = new LogStatistics();
+									parser.getDatabaseOperations(top,logStats);
+									ObjectMapper mapper =new ObjectMapper();
+									JsonNode json = Json.toJson(oprList);
+									return ok(showTimeLine.render(json,
+															  mapper.defaultPrettyPrintingWriter().writeValueAsString(top),
+															  logStats,
+															  session().get("signed_request"))
+										);
+								}else{
+									return ok(index.render(null,new Boolean(true)));
+									
+								}
+					          }
+					    }
+				   )
+		);
 	}
 	public static Result oauthredirect() {
 		return ok(oauthredirect.render());
 	}
-	*/
+	
 
 	@SuppressWarnings("deprecation")
 	public static Result showTimeline() throws Exception {
@@ -68,7 +140,7 @@ public class Application extends Controller {
 		if (filledForm.hasErrors()) {
 	        return badRequest();
 	    } else {
-	    	LogFileRequest resource = filledForm.get();
+	    	final LogFileRequest resource = filledForm.get();
 	    	Http.MultipartFormData body = request().body().asMultipartFormData();
 	    	Http.MultipartFormData.FilePart  resourceFile = body.getFile("logFile");
 	    	if(resourceFile!=null){
@@ -103,8 +175,8 @@ public class Application extends Controller {
 						return ok(index.render(null,new Boolean(true)));
 					}
 				}	
-	    	}else{
-				return ok(index.render(	session().get("signed_request"),
+	    	}else{	
+	    		return ok(index.render(	session().get("signed_request"),
 										new Boolean(false)
 								)
 						);

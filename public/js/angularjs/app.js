@@ -1,1 +1,1 @@
-var myApp = angular.module('apextimeline',[]);
+var myApp = angular.module('apextimeline',['apexTimelineControllers']);

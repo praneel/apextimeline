@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="apextimeline">
   <head>
     <meta charset="utf-8">
     <title>@title</title>
@@ -39,9 +39,9 @@
 
   </head>
 
-  <body>
+  <body ng-controller="ApexTimeLineController">
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" >
       <div class="navbar-inner">
         <div class="container">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -57,7 +57,13 @@
               <li><a href="#contact">Contact</a></li>
             </ul>
 			<ul class="nav pull-right">
-				<li><a href="#" ng-hide="authorized" ng-click="initiateOAuth()">Login to Salesforce</a></li>
+				<li>
+					<a ng-show="!authorized" href="#"ng-click="initiateOAuth()">Login to Salesforce</a>
+					<a ng-show="authorized && userInfo!=null" href="#">
+						<img ng-show="authorized && userInfo!=null" src="{{userInfo.photos.thumbnail}}" height="25" width="25" border="0"/>
+						&nbsp;{{userInfo.display_name}}
+					</a>
+				</li>
 			</ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -78,12 +84,19 @@
     </div>
 <script type="text/javascript">
 	var CONFIG={
-       		clientId :'3MVG9y6x0357HlefnLzrysj7TpaNMouLISiwZr8DZrumu15AZ9JAkHzPHIAPkk25yS4AbCtCROXGBs603P2Li',
+       		clientId :'3MVG9y6x0357HlefnLzrysj7TpevWmvy5gt5XwafIcJJxdcOYrxNF9StapsX3YsOsMVJ9g6aekqtnVc0JPPXO',
 			loginUrl : 'https://login.salesforce.com',
-			callbackPath : 'http://localhost:8080/oauthredirect',
-			popup : true
+			callbackPath : 'http://localhost:9000/oauthRedirect',
+			popup : true,
+			scope:'full'
 	};
 </script> 
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js"></script>
+<script src="/assets/js/angularjs/app.js"></script>
+<script src="/assets/js/angularjs/controllers/ApexTimelineController.js"></script>
+<script src="/assets/js/angularjs/services/ForceAuthService.js"></script>
 
 <script type="text/javascript">
 

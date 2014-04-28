@@ -22,7 +22,7 @@ public class SFDCLogParser {
 	public static void main(String args[]) throws Exception{
 		SFDCLogParser parser = new SFDCLogParser();
 		ObjectMapper mapper = new ObjectMapper();
-		Operation opr = parser.parseLogFile(args[0],Integer.parseInt(args[1]));
+		Operation opr = parser.parseLogFile(new FileReader(args[0]),Integer.parseInt(args[1]));
 		
 		//mapper.writeValue(System.out, opr);
 		LogStatistics logStats = new LogStatistics();
@@ -31,13 +31,20 @@ public class SFDCLogParser {
 		
 	}
 	
-	public Operation parseLogFile(String fileName,Integer timeThreshold) throws Exception{
-		File logFile = new File(fileName);
-		return parseLogFile(logFile,timeThreshold);
-	}
+
 	public Operation parseLogFile(File logFile,Integer timeThreshold) throws Exception{
+		return parseLogFile(new FileReader(logFile),timeThreshold);
+		
+	}	
+	public Operation parseLogFile(String logData,Integer timeThreshold) throws Exception{
+		return parseLogFile(new StringReader(logData),timeThreshold);
+	}	
+
+	public Operation parseLogFile(Reader readerIn,Integer timeThreshold) throws Exception{
+	
+		
 		Stack<Operation> oprStack1 = new Stack<Operation>();
-		BufferedReader reader = new BufferedReader(new FileReader(logFile));
+		BufferedReader reader = new BufferedReader(readerIn);
 		Operation currOp,prevOp,parentOpr;
 		String currLine;
 		currLine = reader.readLine();
@@ -63,6 +70,7 @@ public class SFDCLogParser {
 								prevOp.hasOperations() ||
 								prevOp.getEventType().equalsIgnoreCase("SOQL") ||
 								prevOp.getEventType().equalsIgnoreCase("DML") ||
+								prevOp.getEventType().equalsIgnoreCase("EXECUTION") ||
 								prevOp instanceof TriggerExecutionOperation){
 								//Pop the parent & add it to paren't long running operations
 								parentOpr = oprStack1.isEmpty()?null:oprStack1.pop();
