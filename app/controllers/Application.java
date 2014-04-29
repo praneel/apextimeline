@@ -32,7 +32,7 @@ public class Application extends Controller {
 	private static final String GET_RAW_LOG_URL = "tooling/sobjects/ApexLog/";
 	private static final String GET_LOGS_QUERY = "select Id,LogUser.Name,LogUserId,LogLength,Operation,Application,Status," +
 												 "DurationMilliseconds,StartTime " +
-												 "from ApexLog order by SystemModstamp limit 100";
+												 "from ApexLog order by SystemModstamp desc limit 100";
 	public static Result index() {
 		if(request().method().equalsIgnoreCase("POST")){
 			String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");

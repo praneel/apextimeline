@@ -20,23 +20,33 @@ apexTimeLineControllers.controller('ApexTimeLineController',
             	'Accept':'application/json'
             }
         }).success(function(data, status) {
-            $scope.logRecords=data.records;
+        	if(data.records){
+        		$scope.logRecords=data.records;
+        		$http({ method: 'POST', 
+                    url:'/userinfo',
+                    data:{
+                        'sessionId':$scope.sessionToken.access_token,
+                        'idUrl':$scope.sessionToken.id
+                    },
+                    headers:{
+                    	'Accept':'application/json'
+                    }
+                }).success(function(data, status) {
+                    $scope.userInfo=data;
+                }).error(function(data, status) {
+                });
+        	}else{
+            	$scope.authorized=false;
+            	ForceAuthService.resetSessionToken();
+            	return;
+        	}
         }).error(function(data, status) {
+        	$scope.authorized=false;
+        	ForceAuthService.resetSessionToken();
+        	
         });
 		
-		$http({ method: 'POST', 
-            url:'/userinfo',
-            data:{
-                'sessionId':$scope.sessionToken.access_token,
-                'idUrl':$scope.sessionToken.id
-            },
-            headers:{
-            	'Accept':'application/json'
-            }
-        }).success(function(data, status) {
-            $scope.userInfo=data;
-        }).error(function(data, status) {
-        });
+
 
     }
 		
