@@ -36,8 +36,8 @@ public class Application extends Controller {
 
 	public static Result index() {
 		System.out.println(">>>>>>>>>>>>>>> "+request().headers());
-		if(		request().headers().get("x-forwarded-proto")!=null && 
-				!(request().headers().get("x-forwarded-proto").toString().equalsIgnoreCase("https")))
+		if(		request().headers().get("X-Forwarded-Proto")!=null && 
+				!(request().headers().get("X-Forwarded-Proto").toString().equalsIgnoreCase("https")))
 		{
 			return redirect("https://" + request().host() + request().uri());
 		}
