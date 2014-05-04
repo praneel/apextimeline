@@ -33,7 +33,11 @@ public class Application extends Controller {
 	private static final String GET_LOGS_QUERY = "select Id,LogUser.Name,LogUserId,LogLength,Operation,Application,Status," +
 												 "DurationMilliseconds,StartTime " +
 												 "from ApexLog order by SystemModstamp desc limit 100";
+
 	public static Result index() {
+		if(!(request().headers().get("x-forwarded-proto").toString().equalsIgnoreCase("https"))){
+			return redirect("https://" + request().host() + request().uri());
+		}
 		if(request().method().equalsIgnoreCase("POST")){
 			String[] signedRequest = request().body().asFormUrlEncoded().get("signed_request");
 			String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
