@@ -35,9 +35,7 @@ public class Application extends Controller {
 												 "from ApexLog order by SystemModstamp desc limit 100";
 
 	public static Result index() {
-		System.out.println(">>>>>>>>>>>>>>> X-Forwarded-Proto = "+request().headers().get("X-Forwarded-Proto").toString());
-		if(		request().headers().get("X-Forwarded-Proto")!=null && 
-				!(request().headers().get("X-Forwarded-Proto").toString().equalsIgnoreCase("https")))
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
 		{
 			return redirect("https://" + request().host() + request().uri());
 		}
