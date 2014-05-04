@@ -59,10 +59,18 @@ public class Application extends Controller {
 	
 
 	public static Result sampleTimeline() {
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
+		{
+			return redirect("https://" + request().host() + request().uri());
+		}
 		return ok(sample.render());
 	}
 
 	public static Result logs() {
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
+		{
+			return redirect("https://" + request().host() + request().uri());
+		}
 		JsonNode json = request().body().asJson();
 		String sessionId = json.findPath("sessionId").getTextValue();
 		String instanceUrl = json.findPath("instanceUrl").getTextValue();
@@ -82,6 +90,10 @@ public class Application extends Controller {
 
 	
 	public static Result userInfo() {
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
+		{
+			return redirect("https://" + request().host() + request().uri());
+		}
 		JsonNode json = request().body().asJson();
 		String sessionId = json.findPath("sessionId").getTextValue();
 		String idUrl = json.findPath("idUrl").getTextValue();
@@ -100,6 +112,10 @@ public class Application extends Controller {
 	}
 
 	public static Result showTimelinev2(String logId) {
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
+		{
+			return redirect("https://" + request().host() + request().uri());
+		}
 		final Integer minRunTime=100;
 		String tokenStr = request().cookie("token").value();
 		JsonNode sessionToken = Json.parse(tokenStr);
@@ -139,6 +155,10 @@ public class Application extends Controller {
 
 	@SuppressWarnings("deprecation")
 	public static Result showTimeline() throws Exception {
+		if(	!request().getHeader("X-Forwarded-Proto").equalsIgnoreCase("https"))
+		{
+			return redirect("https://" + request().host() + request().uri());
+		}
 		
 		
 		Form<LogFileRequest> filledForm = Form.form(LogFileRequest.class).bindFromRequest();
