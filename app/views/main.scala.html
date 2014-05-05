@@ -11,7 +11,8 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet"></link>
+	<link href="/assets/css/hopscotch.min.css"  rel="stylesheet"></link>
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -58,7 +59,7 @@
             </ul>
 			<ul class="nav pull-right">
 				<li>
-					<a ng-show="!authorized" href="#"ng-click="initiateOAuth()">Login to Salesforce</a>
+					<a ng-show="!authorized" href="#"ng-click="initiateOAuth()" id="login">Login to Salesforce</a>
 					<a ng-show="authorized && userInfo!=null" href="#">
 						<img ng-show="authorized && userInfo!=null" src="{{userInfo.photos.thumbnail}}" height="25" width="25" border="0"/>
 						&nbsp;{{userInfo.display_name}}
@@ -97,6 +98,8 @@
 <script src="/assets/js/angularjs/app.js"></script>
 <script src="/assets/js/angularjs/controllers/ApexTimeLineController.js"></script>
 <script src="/assets/js/angularjs/services/ForceAuthService.js"></script>
+<script src="/assets/js/hopscotch.min.js"></script>
+<script src="/assets/js/tour.js"></script>
 
 <script type="text/javascript">
 
